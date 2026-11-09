@@ -267,7 +267,7 @@ public enum DependencyClientMacro: MemberAttributeMacro, MemberMacro {
 
       #if DEBUG
       func \(probeName)() {}
-      #sourceLocation(file: \(location.file), line: \(location.line))
+      #sourceLocation(file: \(location.sourceLocationFile), line: \(location.line))
       #IsolationCheck(client: \(probeName))
       #sourceLocation()
       #endif
