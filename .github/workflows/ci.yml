@@ -74,3 +74,25 @@ jobs:
           swift-configuration: ${{ matrix.config }}
           run-tests: false
           build-tests: false
+
+  windows:
+    name: Windows (Swift ${{ matrix.swift }})
+    runs-on: windows-2022
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        swift: ['6.4.2']
+    steps:
+      - name: Keep LF line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v7
+      - name: Start Docker
+        run: Start-Service docker
+      # The fixture uses `@DependencyClient` and `@DependencyEntry`.
+      - name: Build and run the macros
+        run: >
+          docker run --rm
+          -v "${{ github.workspace }}:C:\swift-dependencies"
+          -w "C:\swift-dependencies\.github\fixtures\windows-macros"
+          swift:${{ matrix.swift }}-windowsservercore-ltsc2022
+          swift run WindowsMacros
