@@ -316,7 +316,7 @@ private func entryChecks(
       #endif
       """
   }
-  let directive = "#sourceLocation(file: \(location.file), line: \(location.line))"
+  let directive = "#sourceLocation(file: \(location.sourceLocationFile), line: \(location.line))"
   return """
     #if DEBUG
     func \(raw: isolationProbeName)() {}
@@ -350,7 +350,7 @@ private func sendableCheck(
   return [
     """
     #if DEBUG
-    #sourceLocation(file: \(location.file), line: \(location.line))
+    #sourceLocation(file: \(location.sourceLocationFile), line: \(location.line))
     \(raw: check)
     #sourceLocation()
     #endif
