@@ -55,8 +55,11 @@ extension DependencyValues {
 ///
 /// See ``DependencyValues/fireAndForget`` for more information.
 public struct FireAndForget: Sendable {
-  public let operation:
-    @Sendable (String?, TaskPriority?, @Sendable @escaping () async throws -> Void) async -> Void
+  // NB: A type alias works around a compiler bug. With 'NonisolatedNonsendingByDefault', the
+  //     compiler emits a module interface that it cannot parse for an inline closure parameter.
+  public typealias Operation = @Sendable () async throws -> Void
+
+  public let operation: @Sendable (String?, TaskPriority?, @escaping Operation) async -> Void
 
   public func callAsFunction(
     name: String? = nil,
