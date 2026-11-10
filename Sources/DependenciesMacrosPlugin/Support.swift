@@ -15,6 +15,32 @@ extension SyntaxStringInterpolation {
   }
 }
 
+extension AbstractSourceLocation {
+  /// The file path as a string literal that `#sourceLocation` accepts.
+  ///
+  /// A path with a backslash, such as a Windows path, comes as a raw string literal
+  /// (`#"C:\Sources\File.swift"#`), which `#sourceLocation` rejects. `#sourceLocation` does not
+  /// unescape its file name either, so this uses forward slashes, as Swift's `gyb` does.
+  var sourceLocationFile: ExprSyntax {
+    let literal = self.file.trimmedDescription
+    let pounds = literal.prefix(while: { $0 == "#" }).count
+    guard
+      pounds > 0,
+      literal.count >= 2 * (pounds + 1),
+      !literal.contains("\n")
+    else { return self.file }
+    var path = ""
+    for character in literal.dropFirst(pounds + 1).dropLast(pounds + 1) {
+      switch character {
+      case "\\": path.append("/")
+      case "\"": path.append("\\\"")
+      default: path.append(character)
+      }
+    }
+    return "\"\(raw: path)\""
+  }
+}
+
 extension ClosureExprSyntax {
   mutating func append(placeholder: String) {
     self.statements.append(

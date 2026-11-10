@@ -3,6 +3,15 @@
 import CompilerPluginSupport
 import PackageDescription
 
+#if os(Windows)
+  // combine-schedulers does not compile on Windows.
+  let defaultTraits: Set<String> = ["Clocks", "Foundation", "FoundationNetworking"]
+#else
+  let defaultTraits: Set<String> = [
+    "Clocks", "CombineSchedulers", "Foundation", "FoundationNetworking",
+  ]
+#endif
+
 let package = Package(
   name: "swift-dependencies",
   platforms: [
@@ -30,9 +39,7 @@ let package = Package(
     "CombineSchedulers",
     "Foundation",
     "FoundationNetworking",
-    .default(enabledTraits: [
-      "Clocks", "CombineSchedulers", "Foundation", "FoundationNetworking",
-    ]),
+    .default(enabledTraits: defaultTraits),
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/combine-schedulers", from: "1.0.2"),
