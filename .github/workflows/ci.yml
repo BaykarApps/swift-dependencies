@@ -96,3 +96,10 @@ jobs:
           -w "C:\swift-dependencies\.github\fixtures\windows-macros"
           swift:${{ matrix.swift }}-windowsservercore-ltsc2022
           swift run WindowsMacros
+      - name: Run tests
+        run: >
+          docker run --rm
+          -v "${{ github.workspace }}:C:\swift-dependencies"
+          -w "C:\swift-dependencies"
+          swift:${{ matrix.swift }}-windowsservercore-ltsc2022
+          swift test
